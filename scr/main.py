@@ -1,8 +1,6 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
+
 from streamlit_option_menu import option_menu
-from conf_page import set_config_page
 from profile import run_assessment
 from load_files import load_files
 from assessment_process import get_score
