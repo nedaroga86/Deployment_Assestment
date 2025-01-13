@@ -1,20 +1,21 @@
-import numpy as np
 import streamlit as st
-from st_aggrid import GridOptionsBuilder, AgGrid
+from streamlit_space import space
 
 from conf_page import set_config_page
-from load_files import load_files
-from save_pickles import saving_profile
+from manager_pickles import saving_profile,read_pickle_profile_user
+from profile_table import display_aggrid_table
+from filters import show_filter_menu
+from buttons_design import new_button, eliminate_button
 
 
 def mode_edition():
     st.session_state.mode = False
 
-def run_assessment(function):
+def run_assessment(functions):
     if 'mode' not in st.session_state:
         st.session_state.mode = False
     set_config_page()
-    year = st.sidebar.selectbox('Year', options=[2024,2025])
+    year = show_filter_menu()
 
     if st.session_state.profile == 'auto':
         selected_employee = st.session_state.name
@@ -22,80 +23,60 @@ def run_assessment(function):
         employees = st.session_state.team
         selected_employee = st.sidebar.selectbox('Employee', options=employees)
 
+    profile_user = get_profile_user(functions, selected_employee, year)
+    manage_profile_users(profile_user, selected_employee, year)
 
-    st. subheader(f'Profile of "{selected_employee}"')
-    function = function[(function['Department']== st.session_state.area)]
-    function = read_saved_profile_user(function, selected_employee)
-    # function = function[(function['Year']== year)]
 
+def manage_profile_users(profile_user, selected_employee, year):
     if st.session_state.mode == False and st.session_state.profile == 'team':
         if st.button('Active Edition'):
-            st.session_state.mode  = True
+            st.session_state.mode = True
             st.rerun()
-
     if st.session_state.mode:
         st.text('Editting Functions')
-        year = st.selectbox('year', options=[2024,2025,2026])
-        function['Year'] = year
-        selected_functions = display_aggrid_table(function, True)
-        if st.button('Update Profile'):
-            saving_profile(selected_employee, selected_functions)
-            st.session_state.mode = False
-            st.rerun()
+        selected_functions = display_aggrid_table(profile_user, True)
+        sta, sta2,  = st.columns([2, 6])
+        sta.markdown('#### Stakeholder')
+        st.session_state.stake_holder = sta.selectbox('Stakeholder',
+                                                      options=st.session_state.users_DB['name'],
+                                                      index=0,
+                                                      label_visibility="collapsed")
+        col, col2, col3 = st.columns([2, 4, 2])
+        with col3:
+            space()
+            if new_button('Update Profile'):
+                saving_profile(selected_employee, selected_functions, year)
+                st.session_state.mode = False
+                st.rerun()
+        with col:
+            if eliminate_button('Cancel'):
+                st.session_state.mode = False
+                st.rerun()
     else:
         st.text('Current Active Functions')
-        selected_functions = display_aggrid_table(function[function['Applied?']==True], False)
-        selected_functions = selected_functions['data']
-        selected_functions = selected_functions[selected_functions['Applied?']==True]
+        selected_functions = display_aggrid_table(profile_user, False)
+        selected_functions = selected_functions[selected_functions['Applied?'] == True]
         selected_functions['Employee Name'] = selected_employee
         selected_functions['Level'] = 'Basic'
+        if 'stake_holder' in st.session_state:
+            st.markdown(f'#### Stakeholder: {st.session_state.stake_holder}')
+        else:
+            st.markdown(f'#### To define Stakeholder')
 
 
-def read_saved_profile_user(function, selected_employee):
-    try:
-        function = function.reset_index()
-        files = load_files()
-        profile_user = files.get_profile(selected_employee)
-        function[['Year','Applied?', 'Level', 'Own']] = function.merge(
-            profile_user,
-            how='left',
-            left_on='index',
-            right_on='index'
-        )[['Year','Applied?','Level','Own']]
-        function['Applied?'] = np.where(function['Applied?'].isna(), False, function['Applied?'])
-        function['Level'] = np.where(function['Level'].isna(), 'Basic', function['Level'])
-    except:
-        function['Applied?'] = False
-        function['Level'] = 'Basic'
-        function['Year'] = 0
-        function['Own'] = 0
-    return function
+def get_profile_user(function, selected_employee, year):
+    st.subheader(f'Profile of "{selected_employee}"')
+    function = function[(function['Department'] == st.session_state.area)]
+    profile_user = read_pickle_profile_user(function, selected_employee)
+    if year in profile_user['Year'].values:
+        profile_user = profile_user[(profile_user['Year'] == year)]
+    else:
+        profile_user['Applied?'] = False
+        profile_user['Level'] = 'Basic'
+        profile_user['Year'] = year
+        profile_user['Own'] = 0
+        profile_user['Leader'] = 0
+        profile_user['Stakeholer'] = 0
+    return profile_user
 
 
-def display_aggrid_table(function, editable):
-
-    list_level = ['Basic', 'Intermediate', 'Advanced','Expert']
-    function = function[['index','Department','Year','Function','Description','Applied?','Level']]
-    grid_options_builder = GridOptionsBuilder.from_dataframe(function)
-    grid_options_builder.configure_default_column(resizable=True, autoSizeColumns=True, wrapText = True)
-    grid_options_builder.configure_column("index",  hide=True)
-    grid_options_builder.configure_column("Department", width=100)
-    grid_options_builder.configure_column("Year", width=50)
-    grid_options_builder.configure_column("Level", editable=editable, cellEditor='agSelectCellEditor',
-                                          tooltipField="Function",
-                                          cellEditorParams={'values': list_level},
-                                          width=50)
-
-    grid_options_builder.configure_column("Applied?", editable=editable,  sort="desc", width=80)
-    grid_options_builder.configure_column("Description", wrapText=True, autoHeight=True)
-    grid_options_builder.configure_grid_options(domLayout='normal',
-                                                suppressHorizontalScroll=True,
-                                                enableBrowserTooltips= True)
-    grid_options = grid_options_builder.build()
-    selected_functions = AgGrid(
-        function,
-        gridOptions=grid_options,
-        height=600,
-        fit_columns_on_grid_load=True,
-        theme="balham")
-    return selected_functions

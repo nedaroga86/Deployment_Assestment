@@ -13,7 +13,10 @@ class Main_Program:
 
     def get_start(self):
 
-        menu_options = ["Profile","Assessment", 'Reports', "Planning",'Setup',"Logout"]
+        if st.session_state.profile == 'auto':
+            menu_options = ["Your Functions","Assessments", 'Reports','Setup',"Logout"]
+        else:
+            menu_options = ["Team Functions","Assessments", 'Reports','Setup',"Logout"]
 
         menu_styles = {
             "container": {"padding": "2px"},
@@ -38,9 +41,9 @@ class Main_Program:
         function = files.get_functions()
 
 
-        if page == "Profile":
+        if page == "Your Functions" or page =="Team Functions":
             run_assessment(function)
-        if page == 'Assessment':
+        if page == 'Assessments':
             get_score(function)
         elif page == "Reports":
             st.session_state.mode = False

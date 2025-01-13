@@ -85,7 +85,7 @@ class Logging():
             conn = sqlite3.connect(self.db_path)
             self.users_DB = pd.read_sql_query("SELECT * FROM users_table", conn)
             conn.close()
-            st.session_state.users_DB = True
+            st.session_state.users_DB = self.users_DB
 
         auth_container = st.empty()
         if 'logged_in' not in st.session_state:
