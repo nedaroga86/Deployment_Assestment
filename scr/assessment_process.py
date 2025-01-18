@@ -54,7 +54,7 @@ def make_team_assessment(function):
     employees = st.session_state.team
     selected_employee = st.sidebar.selectbox('Employee', options=employees)
     function = function[function['Department'] == st.session_state.area]
-    function = read_pickle_profile_user(function, selected_employee)
+    function = read_pickle_profile_user(function, selected_employee,year)
     function = function[function['Applied?'] == True]
     function = function[function['Year'] == year]
     employee_score =  function['Own'].min() != 0 and function.empty == False

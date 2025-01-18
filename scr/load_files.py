@@ -2,7 +2,7 @@ import os
 
 
 import pandas as pd
-import streamlit
+
 
 
 class load_files:

@@ -20,6 +20,8 @@ def saving_profile(selected_employee, selected_functions, year):
     profile_df = profile_df[profile_df['Year']!=year]
     profile_df = pd.concat([profile_df, selected_df], ignore_index=True)
     profile_df.to_pickle(filename)
+
+
     st.success('The profile has been saved.')
 
 
@@ -40,16 +42,19 @@ def update_scores(selected_employee,data, score):
     st.success('Scores Updated')
 
 
-def read_pickle_profile_user(function, selected_employee):
+def read_pickle_profile_user(function, selected_employee,year):
     function = function.reset_index()
     files = load_files()
     profile_user = files.get_profile(selected_employee)
+
     unique_years = profile_user['Year'].unique()
-
-
-    function_expanded = pd.concat(
-        [function.assign(Year=year) for year in unique_years],
-        ignore_index=True
+    if not unique_years:
+        function_expanded = function.copy()
+        function_expanded['Year']=year
+    else:
+        function_expanded = pd.concat(
+            [function.assign(Year=year) for year in unique_years],
+            ignore_index=True
     )
 
     updated_columns = ['Year', 'Applied?', 'Level', 'Own', 'Leader', 'Stakeholer']
@@ -65,4 +70,5 @@ def read_pickle_profile_user(function, selected_employee):
     function_expanded['Own'] = np.where(function_expanded['Own'].isna(), 0, function_expanded['Own'])
     function_expanded['Leader'] = np.where(function_expanded['Leader'].isna(), 0, function_expanded['Leader'])
     function_expanded['Stakeholer'] = np.where(function_expanded['Stakeholer'].isna(), 0, function_expanded['Stakeholer'])
+
     return function_expanded

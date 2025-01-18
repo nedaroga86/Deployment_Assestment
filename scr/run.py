@@ -160,7 +160,7 @@ class Logging():
                         st.info("Press enter to login")
 
         if st.session_state.logged_in:
-            st.session_state.team = self.get_info_user()
+            st.session_state.team, st.session_state.id_team = self.get_info_user()
             if st.session_state.is_leader:
                 choose_mode()
             else:
@@ -173,10 +173,12 @@ class Logging():
             users = self.users_DB[self.users_DB["leader_id"] == st.session_state.id]
             st.session_state.is_leader= True
             employees =  list(users['name'].to_list())
+            id_employees = list(users['id'].to_list())
         else:
             employees = [st.session_state.name]
+            id_employees = [st.session_state.id]
             st.session_state.is_leader= False
-        return employees
+        return employees, id_employees
 
 
 if __name__ == "__main__":
