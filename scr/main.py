@@ -4,6 +4,7 @@ from streamlit_option_menu import option_menu
 from profile import run_assessment
 from load_files import load_files
 from assessment_process import get_score
+from mode import choose_mode
 from setup import manage_setup
 
 
@@ -14,9 +15,9 @@ class Main_Program:
     def get_start(self):
 
         if st.session_state.profile == 'auto':
-            menu_options = ["Your Functions","Assessments", 'Reports','Setup',"Logout"]
+            menu_options = ["Your Functions","Assessments", 'Reports','Setup','Role',"Logout"]
         else:
-            menu_options = ["Team Functions","Assessments", 'Reports','Setup',"Logout"]
+            menu_options = ["Team Functions","Assessments", 'Reports','Setup','Role',"Logout"]
 
         menu_styles = {
             "container": {"padding": "2px"},
@@ -49,6 +50,12 @@ class Main_Program:
             st.session_state.mode = False
         elif page == "Setup":
             manage_setup()
+        elif page == "Role":
+            del st.session_state['profile']
+            if st.session_state.is_leader:
+                choose_mode()
+                st.rerun()
+
         elif page == "Logout":
             if st.session_state.logged_in:
                 st.session_state.logged_in = False

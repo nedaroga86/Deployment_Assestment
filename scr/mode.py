@@ -1,5 +1,5 @@
 import os
-from main import Main_Program
+
 import streamlit as st
 from streamlit_space import space
 
@@ -27,6 +27,7 @@ page_bg_img = """
 
 def choose_mode():
     if 'profile' in st.session_state:
+        from main import Main_Program
         prog = Main_Program()
         prog.get_start()
     else:
