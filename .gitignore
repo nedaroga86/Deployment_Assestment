@@ -24,8 +24,8 @@ src/*.xlsx
 
 # streamlit
 src/.streamlit
-profiles/*
+profiles/*.pickle
 
 # What IFs
-*.pickle
+
 *.db
