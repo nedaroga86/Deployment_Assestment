@@ -7,6 +7,7 @@ from assessment_process import get_score
 
 from profile_team import get_profile_team
 from admin_site import Setup
+from reports import Reports
 
 
 class Main_Program:
@@ -32,7 +33,8 @@ class Main_Program:
         elif page == 'Assessments':
             get_score(function)
         elif page == "Reports":
-            st.session_state.mode = False
+            reports = Reports()
+            reports.get_reports()
         elif page == "Setup":
             admin = Setup()
             admin.setup()
