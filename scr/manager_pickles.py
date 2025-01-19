@@ -47,10 +47,11 @@ def read_pickle_profile_user(function, selected_employee,year):
     files = load_files()
     profile_user = files.get_profile(selected_employee)
 
-    unique_years = profile_user['Year'].unique()
-    if not unique_years:
+    unique_years = list(profile_user['Year'].unique())
+
+    if len(unique_years) != 0 :
         function_expanded = function.copy()
-        function_expanded['Year']=year
+        function_expanded['Year'] = year
     else:
         function_expanded = pd.concat(
             [function.assign(Year=year) for year in unique_years],
