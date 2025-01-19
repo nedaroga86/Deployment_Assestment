@@ -1,5 +1,5 @@
 from st_aggrid import GridOptionsBuilder, AgGrid
-
+import streamlit as st
 
 def display_aggrid_table(profile_user, editable):
     profile = profile_user.copy() if editable else  profile_user[profile_user['Applied?'] == True].copy()

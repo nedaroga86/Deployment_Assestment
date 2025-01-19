@@ -4,11 +4,14 @@ from st_aggrid import GridOptionsBuilder, AgGrid
 from filters import show_filter_menu
 
 
-def make_own_assesssments(function):
+def make_own_assesssments(function, year):
 
-    year = show_filter_menu()
     function = function[function['Year'] == year]
     function = function[function['Applied?'] == True]
+
+    st.warning("You don't have active functions for this period, if you need to activate some of them, "
+               "please reachout to leader.") if len(function)== 0 else 'test2'
+
     function = function.melt(id_vars=['index', 'Department', "Year", 'Function', 'Description', 'Level','Own'],
                              value_vars=['Basic', 'Intermediate', 'Advanced', 'Expert'], var_name='Options',
                              value_name='Level Description')

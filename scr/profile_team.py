@@ -13,55 +13,50 @@ from buttons_design import new_button, eliminate_button
 
 def mode_edition():
     st.session_state.mode = False
+    st.session_state.mode_stake_holder = False
 
-def run_assessment(functions):
-    if 'mode' not in st.session_state:
-        st.session_state.mode = False
+def get_profile_team(functions):
     set_config_page()
-    year = show_filter_menu()
+    if st.session_state.is_leader:
+        if 'mode' not in st.session_state:
+            st.session_state.mode = False
+        if 'mode_stake_holder' not in st.session_state:
+            st.session_state.mode_stake_holder = False
+        year = show_filter_menu()
 
-    if st.session_state.profile == 'auto':
-        selected_employee = st.session_state.name
-    else:
         employees = st.session_state.team
         selected_employee = st.sidebar.selectbox('Employee', options=employees)
+        id_selected_employee = st.session_state.users_DB[st.session_state.users_DB['name']==selected_employee]['id'].iloc[0]
 
-    id_selected_employee = st.session_state.users_DB[st.session_state.users_DB['name']==selected_employee]['id'].iloc[0]
+        profile_user = get_profile_user(functions, selected_employee, year)
+        manage_profile_users(profile_user, selected_employee, year, id_selected_employee)
+    else:
+        st.subheader(f'Profile of employees on Charge')
+        st.warning('You dont have persons on charge in our system.')
 
-    profile_user = get_profile_user(functions, selected_employee, year)
-    manage_profile_users(profile_user, selected_employee, year, id_selected_employee)
 
 
 def manage_profile_users(profile_user, selected_employee, year,id_selected_employee):
-    if st.session_state.mode == False and st.session_state.profile == 'team':
-        if st.button('Active Edition'):
+    if st.session_state.mode == False:
+        if st.button(f'Edit Functions period {year}'):
             st.session_state.mode = True
             st.rerun()
     if st.session_state.mode:
-        st.text('Editting Functions')
+        st.text(f'Editting Functions of period {year}')
         selected_functions = display_aggrid_table(profile_user, True)
-        sta, sta2,  = st.columns([2, 6])
-        sta.markdown('#### Stakeholder')
-        stake_holder = sta.selectbox('Stakeholder',
-                                                      options=st.session_state.users_DB['name'],
-                                                      index=0,
-                                                      label_visibility="collapsed")
-
-        stake_holder =  st.session_state.users_DB[st.session_state.users_DB['name']==stake_holder]['id'].iloc[0]
-
-
         col, col2, col3 = st.columns([2, 4, 2])
+
         with col3:
             space()
             if new_button('Update Profile'):
                 saving_profile(selected_employee, selected_functions, year)
-                save_stakeholder(stake_holder,id_selected_employee)
                 st.session_state.mode = False
                 st.rerun()
         with col:
             if eliminate_button('Cancel'):
                 st.session_state.mode = False
                 st.rerun()
+
     else:
         st.text('Current Active Functions')
         selected_functions = display_aggrid_table(profile_user, False)
@@ -69,16 +64,49 @@ def manage_profile_users(profile_user, selected_employee, year,id_selected_emplo
         selected_functions['Employee Name'] = selected_employee
         selected_functions['Level'] = 'Basic'
 
+        define_stake_holder(id_selected_employee, selected_employee, selected_functions, year)
+
+
+
+def define_stake_holder(id_selected_employee, selected_employee, selected_functions, year):
+    if not st.session_state.mode_stake_holder:
         id_stake_holder = st.session_state.users_DB[st.session_state.users_DB['id'] ==
                                                     id_selected_employee]['stakeholder'].iloc[0]
-
+        sta, sta2,  = st.columns([2, 6])
         if id_stake_holder != '':
-            sta, sta2,  = st.columns([2, 6])
-            stake_holder = st.session_state.users_DB[st.session_state.users_DB['id'] == id_stake_holder]['name'].iloc[0]
-            sta.info(f'''##### Current Stakeholder: 
-                    {stake_holder}''')
+
+            stake_holder = st.session_state.users_DB[st.session_state.users_DB['id'] ==
+                                                     id_stake_holder]['name'].iloc[0]
+            sta.selectbox('Stakeholder',options=[f'{stake_holder}'], index=0, disabled=True)
         else:
-            st.markdown(f'#### To assign an Stakeholder')
+            sta.selectbox('Stakeholder',options=['To assign an Stakeholder'], index=0, disabled=True)
+
+        if st.button('Update Stakeholder'):
+            st.session_state.mode_stake_holder = True
+            st.rerun()
+    else:
+        sta, sta2 = st.columns([2, 6])
+        sta.markdown('#### Stakeholder')
+        stake_holder = sta.selectbox('Stakeholder',
+                                     options=st.session_state.users_DB['name'],
+                                     index=0,
+                                     label_visibility="collapsed")
+
+        stake_holder = st.session_state.users_DB[st.session_state.users_DB['name'] == stake_holder]['id'].iloc[0]
+        space()
+        with sta:
+            opt, opt2 = st.columns([2, 2])
+            with opt2:
+                if new_button('Confirm'):
+                    save_stakeholder(stake_holder, id_selected_employee)
+                    st.session_state.mode_stake_holder = False
+                    st.rerun()
+            with opt:
+                if eliminate_button('Cancel'):
+                    st.session_state.mode_stake_holder = False
+                    st.rerun()
+        space(lines=2)
+
 
 
 def get_profile_user(function, selected_employee, year):

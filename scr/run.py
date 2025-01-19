@@ -85,7 +85,7 @@ class Logging():
             conn = sqlite3.connect(self.db_path)
             self.users_DB = pd.read_sql_query("SELECT * FROM users_table", conn)
             conn.close()
-            st.session_state.users_DB = self.users_DB
+
 
         auth_container = st.empty()
         if 'logged_in' not in st.session_state:
@@ -147,6 +147,8 @@ class Logging():
                     if bcrypt.checkpw(password.encode('utf-8'), password_hash):
                         st.session_state.clear()
                         st.session_state.id = username
+                        st.session_state.role = user["role"].iloc[0]
+                        st.session_state.users_DB = self.users_DB
                         st.session_state.name = user["name"].iloc[0]
                         st.session_state.area = user["area"].iloc[0]
                         st.session_state.logged_in = True
@@ -161,23 +163,26 @@ class Logging():
 
         if st.session_state.logged_in:
             st.session_state.team, st.session_state.id_team = self.get_info_user()
-            if st.session_state.is_leader:
-                choose_mode()
-            else:
-                st.session_state.profile = 'auto'
-                prog = Main_Program()
-                prog.get_start()
+            prog = Main_Program()
+            prog.get_start()
 
     def get_info_user(self):
+        employees = []
+        id_employees = []
         if st.session_state.id in self.users_DB['leader_id'].to_list():
-            users = self.users_DB[self.users_DB["leader_id"] == st.session_state.id]
-            st.session_state.is_leader= True
-            employees =  list(users['name'].to_list())
-            id_employees = list(users['id'].to_list())
+            users_leader = self.users_DB[self.users_DB["leader_id"] == st.session_state.id]
+            st.session_state.is_leader = True
+            employees =  list(users_leader['name'].to_list())
+            id_employees = list(users_leader['id'].to_list())
         else:
+            st.session_state.is_leader= False
             employees = [st.session_state.name]
             id_employees = [st.session_state.id]
-            st.session_state.is_leader= False
+        if st.session_state.id in self.users_DB['stakeholder'].to_list():
+            users_stakeholder = self.users_DB[self.users_DB["stakeholder"] == st.session_state.id]
+            st.session_state.is_stakeholder = True
+        else:
+            st.session_state.is_stakeholder = False
         return employees, id_employees
 
 

@@ -1,11 +1,12 @@
 import streamlit as st
 
 from streamlit_option_menu import option_menu
-from profile import run_assessment
+from profile_own import run_assessment
 from load_files import load_files
 from assessment_process import get_score
-from mode import choose_mode
-from setup import manage_setup
+
+from profile_team import get_profile_team
+from admin_site import Setup
 
 
 class Main_Program:
@@ -14,49 +15,29 @@ class Main_Program:
 
     def get_start(self):
 
-        if st.session_state.profile == 'auto':
-            menu_options = ["Your Functions","Assessments", 'Reports','Setup','Role',"Logout"]
-        else:
-            menu_options = ["Team Functions","Assessments", 'Reports','Setup','Role',"Logout"]
 
-        menu_styles = {
-            "container": {"padding": "2px"},
-            "nav-link": {
-                "font-size": "14px",
+        menu_options = ["Your Functions","Team Functions","Assessments", 'Reports','Setup',"Logout"]
 
-                "text-align": "center",
-                "margin": "5px",
-                "hover-color": "#fafafa",
-                "icon": {"color": "red"}
-            },
-            "nav-link-selected": {"background-color": "#ED2E17", "color": "white"}, #9E3E4A
-            "icon": {"color": "#F0F0F0"},
-            "nav-link-logout": {"color": "red", "hover-color": "#ffcccc"},
-        }
+        page = st.sidebar.radio("Sections:", options=menu_options)
+        st.sidebar.divider()
 
-        page = option_menu(None, menu_options,
-                           icons=['bi bi-list-task','bi bi-table','bi bi-table'],
-                           menu_icon="cast", default_index=0, orientation="horizontal",
-                           styles=menu_styles)
         files = load_files()
         function = files.get_functions()
 
 
-        if page == "Your Functions" or page =="Team Functions":
+        if page == "Your Functions":
             run_assessment(function)
-        if page == 'Assessments':
+        elif page =="Team Functions":
+            get_profile_team(function)
+        elif page == 'Assessments':
             get_score(function)
         elif page == "Reports":
             st.session_state.mode = False
         elif page == "Setup":
-            manage_setup()
-        elif page == "Role":
-            del st.session_state['profile']
-            if st.session_state.is_leader:
-                choose_mode()
-                st.rerun()
-
+            admin = Setup()
+            admin.setup()
         elif page == "Logout":
             if st.session_state.logged_in:
                 st.session_state.logged_in = False
                 st.rerun()
+

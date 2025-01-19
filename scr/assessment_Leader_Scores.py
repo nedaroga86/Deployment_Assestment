@@ -3,7 +3,7 @@ from st_aggrid import GridOptionsBuilder, AgGrid
 
 
 
-def make_team_assessments(function):
+def show_team_assessments(function):
 
 
     function = function[function['Applied?'] == True]
