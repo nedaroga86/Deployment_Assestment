@@ -2,10 +2,8 @@ import os
 import sqlite3
 
 import streamlit as st
-from streamlit_space import space
-
 from conf_page import set_config_page
-from manager_pickles import saving_profile,read_pickle_profile_user
+from manager_pickles import read_pickle_profile_user
 from profile_table import display_aggrid_table
 from filters import show_filter_menu
 

@@ -1,7 +1,6 @@
 import streamlit as st
 from st_aggrid import GridOptionsBuilder, AgGrid
 
-from filters import show_filter_menu
 
 
 def make_own_assesssments(function, year):

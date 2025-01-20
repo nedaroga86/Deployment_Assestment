@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_space import space
 from main import Main_Program
-from mode import choose_mode
+
 
 st.cache_data.clear()
 st.cache_resource.clear()
