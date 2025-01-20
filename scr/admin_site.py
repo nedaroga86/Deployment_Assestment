@@ -8,6 +8,7 @@ from passwords_validator import validate_passwords
 from database_class import Data_Base_class
 from cache_manager import manage_cache
 from admin_site_admin_users import manage_Users
+from buttons_design import new_button, eliminate_button
 
 
 class Setup:
@@ -50,7 +51,9 @@ class Setup:
                 self.manage_current_User()
             elif section == 'Users Management':
                 manage_Users()
-
         else:
+            section = st.sidebar.radio("Sections:", options=["Security"])
             manage_cache()
             self.manage_current_User()
+
+

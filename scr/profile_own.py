@@ -8,7 +8,7 @@ from conf_page import set_config_page
 from manager_pickles import saving_profile,read_pickle_profile_user
 from profile_table import display_aggrid_table
 from filters import show_filter_menu
-from buttons_design import new_button, eliminate_button
+
 
 
 def mode_edition():
@@ -25,10 +25,10 @@ def run_assessment(functions):
 
     st.subheader(f'This is your profile of {year}')
     profile_user = get_profile_user(functions, selected_employee, year)
-    manage_profile_users(profile_user, selected_employee, year, id_selected_employee)
+    manage_profile_users(profile_user, selected_employee, id_selected_employee)
 
 
-def manage_profile_users(profile_user, selected_employee, year,id_selected_employee):
+def manage_profile_users(profile_user, selected_employee,id_selected_employee):
 
     selected_functions = display_aggrid_table(profile_user, False)
     selected_functions = selected_functions[selected_functions['Applied?'] == True]

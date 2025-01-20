@@ -118,7 +118,7 @@ class Logging():
                     )
                     username = st.text_input("Username")
                     password = st.text_input("Password", type="password")
-                    app_version = "v1.2.0"
+                    app_version = "v3.5.0"
                     st.markdown(
                         f"""
                                 <style>
@@ -167,8 +167,6 @@ class Logging():
             prog.get_start()
 
     def get_info_user(self):
-        employees = []
-        id_employees = []
         if st.session_state.id in self.users_DB['leader_id'].to_list():
             users_leader = self.users_DB[self.users_DB["leader_id"] == st.session_state.id]
             st.session_state.is_leader = True

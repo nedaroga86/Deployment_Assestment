@@ -10,17 +10,11 @@ from assessment_Leader_Scores import show_team_assessments
 from filters import show_filter_menu
 
 
-def get_score(function):
+def get_score(function,profile):
     set_config_page()
 
-    st.sidebar.subheader('Assesstment')
-    options =['Me']
-    options.append('Leader') if st.session_state.is_leader else options
-    options.append('Stakeholder') if st.session_state.is_stakeholder else options
-
-    profile = st.sidebar.selectbox('Assessment as:',options=options)
     year = show_filter_menu()
-    if st.session_state.mode == False and profile == 'Leader':
+    if st.session_state.mode == False and profile == 'As Leader':
         if 'cancel' in st.session_state:
             st.text('')
             del st.session_state['cancel']
