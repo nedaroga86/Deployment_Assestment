@@ -10,11 +10,11 @@ from assessment_Leader_Scores import show_team_assessments
 from filters import show_filter_menu
 
 
-def get_score(function,profile):
+def get_score(function,profile, year):
     set_config_page()
 
-    year = show_filter_menu()
-    if st.session_state.mode == False and profile == 'As Leader':
+
+    if st.session_state.mode == False and profile == 'Leader Profile':
         if 'cancel' in st.session_state:
             st.text('')
             del st.session_state['cancel']
