@@ -7,7 +7,7 @@ from manager_pickles import read_pickle_profile_user, update_scores
 from buttons_design import new_button, eliminate_button
 from assesment_Own_Scores import make_own_assesssments
 from assessment_Leader_Scores import show_team_assessments
-from filters import show_filter_menu
+
 
 
 def get_score(function,selected_employee, year):

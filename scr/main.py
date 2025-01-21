@@ -4,7 +4,6 @@ from streamlit_option_menu import option_menu
 from profile_own import run_assessment
 from load_files import load_files
 from assessment_process import get_score
-from profile_team import get_profile_team
 from admin_site import Setup
 from reports import Reports
 from buttons_design import eliminate_button
