@@ -90,7 +90,7 @@ class Main_Program:
             admin.setup()
 
 
-    @st.dialog('Select the View')
+    @st.dialog('Select View Mode:')
     def get_profile(self):
         with st.form("Select an Profile", clear_on_submit=True):
             st.text('The list of the profiles is related to the configuration. If you have persons on charge you will see "Leader Profile", or if you'
