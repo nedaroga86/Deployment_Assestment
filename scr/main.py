@@ -90,7 +90,7 @@ class Main_Program:
             admin.setup()
 
 
-    @st.dialog('Select a Profile')
+    @st.dialog('Select the View')
     def get_profile(self):
         with st.form("Select an Profile", clear_on_submit=True):
             st.text('The list of the profiles is related to the configuration. If you have persons on charge you will see "Leader Profile", or if you'
@@ -98,10 +98,10 @@ class Main_Program:
             options = []
             if st.session_state.profile_selected != 'My Profile':
                 options.append('My Profile')
-            if st.session_state.profile_selected != 'Leader Profile':
-                options.append('Leader Profile') if st.session_state.is_leader else options
-            if st.session_state.profile_selected != 'Stakeholder Profile':
-                options.append('Stakeholder Profile') if st.session_state.is_stakeholder else options
+            if st.session_state.profile_selected != 'Leader View':
+                options.append('Leader View') if st.session_state.is_leader else options
+            if st.session_state.profile_selected != 'Stakeholder View':
+                options.append('Stakeholder View') if st.session_state.is_stakeholder else options
             profile = st.selectbox("Role:", options=options,
                                    label_visibility="collapsed")
             but1,but2, but3 = st.columns([2,3,2])

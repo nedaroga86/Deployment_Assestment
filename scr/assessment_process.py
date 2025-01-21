@@ -13,7 +13,7 @@ from filters import show_filter_menu
 def get_score(function,selected_employee, year):
     set_config_page()
     profile = st.session_state.profile_selected
-    if st.session_state.mode == False and profile == 'Leader Profile':
+    if st.session_state.mode == False and profile == 'Leader View':
         if 'cancel' in st.session_state:
             st.text('')
             del st.session_state['cancel']
