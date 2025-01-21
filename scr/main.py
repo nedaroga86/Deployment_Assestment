@@ -20,7 +20,7 @@ class Main_Program:
 
     def get_start(self):
         if 'profile_selected' not in st.session_state:
-            st.session_state.profile_selected = 'My profile'
+            st.session_state.profile_selected = 'My Profile'
 
         menu_options = ["Categories","Assessments", 'Reports','Setup']
         col0, col1 = st.sidebar.columns([3,2])
