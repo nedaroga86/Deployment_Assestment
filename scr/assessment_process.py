@@ -10,17 +10,16 @@ from assessment_Leader_Scores import show_team_assessments
 from filters import show_filter_menu
 
 
-def get_score(function,profile, year):
+def get_score(function,selected_employee, year):
     set_config_page()
-
-
+    profile = st.session_state.profile_selected
     if st.session_state.mode == False and profile == 'Leader Profile':
         if 'cancel' in st.session_state:
             st.text('')
             del st.session_state['cancel']
             st.rerun()
 
-        make_team_assessment(function,year)
+        make_team_assessment(function,selected_employee,year)
     else:
         if 'cancel' in st.session_state:
             st.text('')
@@ -51,9 +50,7 @@ def process_new_scores(scores, selected_employee, score):
         st.rerun()
 
 
-def make_team_assessment(function,year):
-    employees = st.session_state.team
-    selected_employee = st.sidebar.selectbox('Employee', options=employees)
+def make_team_assessment(function,selected_employee,year):
     st.subheader(f'Assessment {selected_employee} for {year}')
     function = function[function['Department'] == st.session_state.area]
     function = read_pickle_profile_user(function, selected_employee,year)

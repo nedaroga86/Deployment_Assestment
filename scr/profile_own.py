@@ -18,7 +18,7 @@ def run_assessment(functions, year, selected_employee):
     set_config_page()
 
 
-    st.subheader(f'This is your profile of {year}')
+    st.subheader(f'Profile of {selected_employee} - {year}')
     profile_user = get_profile_user(functions, selected_employee, year)
     manage_profile_users(profile_user, selected_employee)
 

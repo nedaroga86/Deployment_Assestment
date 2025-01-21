@@ -37,8 +37,6 @@ class Main_Program:
                     st.session_state.logged_in = False
                 st.rerun()
 
-
-
         with st.sidebar.container(border=True):
 
             page = st.selectbox("Sections:", options=menu_options)
@@ -47,7 +45,13 @@ class Main_Program:
 
         files = load_files()
         function = files.get_functions()
-        selected_employee = st.session_state.name
+
+
+        if st.session_state.profile_selected == 'My Profile':
+            selected_employee = st.session_state.name
+        else:
+            employees = st.session_state.team
+            selected_employee = st.sidebar.selectbox('Employee', options=employees)
 
         if page == 'Categories' or page == 'Assessments':
             if page == 'Categories':
@@ -77,7 +81,7 @@ class Main_Program:
                     get_stakeholder_team('Team',selected_employee)
 
         elif page == 'Assessments':
-            get_score(function, st.session_state.profile_selected, year)
+            get_score(function, selected_employee, year)
         elif page == "Reports":
             reports = Reports()
             reports.get_reports()
@@ -91,9 +95,13 @@ class Main_Program:
         with st.form("Select an Profile", clear_on_submit=True):
             st.text('The list of the profiles is related to the configuration. If you have persons on charge you will see "Leader Profile", or if you'
                     'have any employee assigned to you as Steakholder you will see the option "Stakeholder Profile".')
-            options =['My Profile']
-            options.append('Leader Profile') if st.session_state.is_leader else options
-            options.append('Stakeholder Profile') if st.session_state.is_stakeholder else options
+            options = []
+            if st.session_state.profile_selected != 'My Profile':
+                options.append('My Profile')
+            if st.session_state.profile_selected != 'Leader Profile':
+                options.append('Leader Profile') if st.session_state.is_leader else options
+            if st.session_state.profile_selected != 'Stakeholder Profile':
+                options.append('Stakeholder Profile') if st.session_state.is_stakeholder else options
             profile = st.selectbox("Role:", options=options,
                                    label_visibility="collapsed")
             but1,but2, but3 = st.columns([2,3,2])
