@@ -66,7 +66,7 @@ class Main_Program:
                               menu_icon="cast", default_index=0, orientation="horizontal")
 
         if page == 'Categories':
-            if tab =='Functions':
+            if ab =='Functions':
                 if st.session_state.profile_selected == 'My Profile':
                     run_assessment(function,year, selected_employee)
                 else:

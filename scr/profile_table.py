@@ -1,7 +1,12 @@
+import time
+
 from st_aggrid import GridOptionsBuilder, AgGrid
 
 
 def display_aggrid_table(profile_user, editable):
+    import streamlit as st
+    with st.spinner():
+        time.sleep(1)
     profile = profile_user.copy() if editable else  profile_user[profile_user['Applied?'] == True].copy()
 
     list_level = ['Basic', 'Intermediate', 'Advanced','Expert']
