@@ -9,6 +9,7 @@ from reports import Reports
 from buttons_design import eliminate_button
 from hardskills import Hardskills_class
 from filters import show_filter_menu
+from profile_team import get_profile_team
 from stakeholder_team import get_stakeholder_team
 from softskills import Softskills_class
 
@@ -66,7 +67,10 @@ class Main_Program:
 
         if page == 'Categories':
             if tab =='Functions':
-                run_assessment(function,year, selected_employee)
+                if st.session_state.profile_selected == 'My Profile':
+                    run_assessment(function,year, selected_employee)
+                else:
+                    get_profile_team(function, year, selected_employee)
             elif tab=='Softskills':
                 soft = Softskills_class()
                 soft.get_softskills()
@@ -74,7 +78,7 @@ class Main_Program:
                 hard = Hardskills_class()
                 hard.get_hardskills()
             elif tab=='Stakeholder':
-                if st.session_state.profile_selected == 'My profile':
+                if st.session_state.profile_selected == 'My Profile':
                     get_stakeholder_team('Own',  selected_employee)
                 else:
                     get_stakeholder_team('Team',selected_employee)

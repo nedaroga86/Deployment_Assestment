@@ -1,9 +1,5 @@
 import os
-
-
 import pandas as pd
-
-
 
 class load_files:
     def __init__(self):
@@ -23,5 +19,3 @@ class load_files:
             profile_selected.to_pickle(db_path)
             pass
         return profile_selected
-
-
