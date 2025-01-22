@@ -135,7 +135,7 @@ def show_current_users(users_DB):
         quick_filter_text = st.text_input("Filtrar filas:", "")
         #st.markdown("Users with access to the 5Y Forecasting Tool")
         gb = GridOptionsBuilder.from_dataframe(users_DB)
-        gb.configure_column('index', sort='asc', hide=True)
+        gb.configure_column('index', width=80, sort='asc')
         gb.configure_column('id', width=100)
         gb.configure_column('Full name', header_name='Full Name', filter=True,width=200)
         gb.configure_column('Role', width=100)
