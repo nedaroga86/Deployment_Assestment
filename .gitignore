@@ -25,6 +25,7 @@ src/*.xlsx
 # streamlit
 src/.streamlit
 profiles/*.pickle
+dataBase/*.db
 
 # What IFs
 
