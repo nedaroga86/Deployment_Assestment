@@ -1,6 +1,3 @@
-import os
-import sqlite3
-
 import streamlit as st
 from conf_page import set_config_page
 from manager_pickles import read_pickle_profile_user

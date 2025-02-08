@@ -109,3 +109,44 @@ def saving_soft_skills(selected_employee, selected_functions, year):
     profile_df = pd.concat([profile_df, selected_df], ignore_index=True)
     profile_df.to_pickle(filename)
     st.success('The profile has been saved.')
+
+
+def read_pickle_hardskills_user(hard_skills, selected_employee,year):
+    function = hard_skills.reset_index()
+    files = load_files()
+    profile_user = files.get_hardskills_per_user(selected_employee)
+
+    unique_years = list(profile_user['Year'].unique())
+    if len(unique_years) == 0 :
+        function_expanded = function.copy()
+        function_expanded['Year'] = year
+    else:
+        function_expanded = pd.concat(
+            [function.assign(Year=year) for year in unique_years],
+            ignore_index=True
+        )
+
+    updated_columns = ['Year', 'Applied?', 'Level', 'Leader']
+    function_expanded[updated_columns] = function_expanded.merge(
+        profile_user,
+        how='left',
+        on=['index', 'Year']
+    )[updated_columns]
+
+    function_expanded['Applied?'] = np.where(function_expanded['Applied?'].isna(), False, function_expanded['Applied?'])
+    function_expanded['Level'] = np.where(function_expanded['Level'].isna(), 'Basic', function_expanded['Level'])
+    function_expanded['Leader'] = np.where(function_expanded['Leader'].isna(), 0, function_expanded['Leader'])
+    return function_expanded
+
+
+def saving_hard_skills(selected_employee, selected_functions, year):
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    filename = os.path.join(BASE_DIR, '..', 'profiles_hardskills', f"{selected_employee}_hardskills.pickle")
+    profile_df = pd.read_pickle(filename)
+    selected_df = selected_functions.copy()
+    selected_df['Leader'] = 0
+
+    profile_df = profile_df[profile_df['Year']!=year]
+    profile_df = pd.concat([profile_df, selected_df], ignore_index=True)
+    profile_df.to_pickle(filename)
+    st.success('The profile has been saved.')

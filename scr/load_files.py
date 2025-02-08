@@ -39,3 +39,13 @@ class load_files:
             profile_selected.to_pickle(db_path)
             pass
         return profile_selected
+
+    def get_hardskills_per_user(self, employee):
+        db_path = os.path.join(self.BASE_DIR,'..', 'profiles_hardskills', f'{employee}_hardskills.pickle')
+        try:
+            profile_selected = pd.read_pickle(db_path)
+        except:
+            profile_selected = pd.DataFrame(columns=['index','Competency','Competency Description','Applied?','Level','Year','Leader'])
+            profile_selected.to_pickle(db_path)
+            pass
+        return profile_selected

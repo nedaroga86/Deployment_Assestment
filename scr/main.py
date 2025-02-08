@@ -6,9 +6,10 @@ from load_files import load_files
 from assessment_process import get_score
 from admin_site import Setup
 from reports import Reports
-from hardskills import Hardskills_class
+from hard_skills_users import Hardskills_class
 from filters import show_filter_menu
 from profile_team import get_profile_team
+from hard_skills_team import get_hard_skills_team
 from soft_skills_users import Softskills_class
 from soft_skils_team import get_soft_skills_team
 from stakeholder_team import get_stakeholder_team
@@ -72,8 +73,11 @@ class Main_Program:
                 else:
                     get_soft_skills_team(softskills,year, selected_employee)
             elif tab=='Hardskills':
-                hard = Hardskills_class()
-                hard.get_hardskills(hardskills)
+                if st.session_state.profile_selected == 'My Profile':
+                    hard = Hardskills_class()
+                    hard.get_hardskills(hardskills,year, selected_employee)
+                else:
+                    get_hard_skills_team(hardskills,year, selected_employee)
             elif tab=='Stakeholder':
                 if st.session_state.profile_selected == 'My Profile':
                     get_stakeholder_team('Own',  selected_employee)
