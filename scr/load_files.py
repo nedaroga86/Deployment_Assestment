@@ -11,12 +11,12 @@ class load_files:
         return functions
 
     def get_softskills(self):
-        db_path = os.path.join(self.BASE_DIR,'..', 'files', 'softskills.pickle')
+        db_path = os.path.join(self.BASE_DIR,'..', 'files', 'softSkills.pickle')
         softskills = pd.read_pickle(db_path)
         return softskills
 
     def get_hardskills(self):
-        db_path = os.path.join(self.BASE_DIR,'..', 'files', 'hardskills.pickle')
+        db_path = os.path.join(self.BASE_DIR,'..', 'files', 'hardSkills.pickle')
         hardskills = pd.read_pickle(db_path)
         return hardskills
 
