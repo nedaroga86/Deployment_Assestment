@@ -17,7 +17,7 @@ def manage_Users():
     manage_cache()
     db = Data_Base_class()
     users_DB = db.get_all_users_info('id,name,role,area, active')
-    st.markdown('''### Users Manager 5Y Forecasting Tool  ''')
+    st.markdown('''### Users Manager ''')
     col, col2,col3 = st.columns([20,1,12])
     with (col):
         users_DB.reset_index(inplace=True)
@@ -25,6 +25,7 @@ def manage_Users():
                                  'name': 'Full name',
                                  'role': 'Role',
                                  'email': 'Email'}, inplace=True)
+
 
         selected_user = show_current_users(users_DB)
 
@@ -131,18 +132,27 @@ def show_current_users(users_DB):
         """,
         unsafe_allow_html=True)
     with st.container(border=False):
+        quick_filter_text = st.text_input("Filtrar filas:", "")
         #st.markdown("Users with access to the 5Y Forecasting Tool")
         gb = GridOptionsBuilder.from_dataframe(users_DB)
-        gb.configure_column('index', sort='asc', width=100)
-
+        gb.configure_column('index', width=80, sort='asc')
+        gb.configure_column('id', width=100)
+        gb.configure_column('Full name', header_name='Full Name', filter=True,width=200)
+        gb.configure_column('Role', width=100)
+        gb.configure_column('area', width=100)
+        gb.configure_column('active', width=80)
         gb.configure_selection(use_checkbox=True,
                                header_checkbox=True,
                                header_checkbox_filtered_only=True)
 
         gb.configure_grid_options(domLayout='fill')  # Ajuste de tamaño normal
         gb.configure_grid_options(rowHeight=25)  # Ajustar altura dinámica
+        gb.configure_grid_options(quick_filter=quick_filter_text)  # Ajustar altura dinámica
         gridOptions = gb.build()
-        selected_user =AgGrid(users_DB, gridOptions=gridOptions, height=350,fit_columns_on_grid_load=True)
+        selected_user =AgGrid(users_DB, gridOptions=gridOptions,
+                              height=500,
+                              allow_unsafe_jscode=True,
+                              fit_columns_on_grid_load=True)
 
         return  selected_user
 

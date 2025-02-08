@@ -118,7 +118,7 @@ class Logging():
                     )
                     username = st.text_input("Username")
                     password = st.text_input("Password", type="password")
-                    app_version = "v3.5.0"
+                    app_version = "v4.0.0"
                     st.markdown(
                         f"""
                                 <style>
