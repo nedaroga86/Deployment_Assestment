@@ -10,9 +10,6 @@ from profile_table import display_aggrid_table
 from buttons_design import new_button, eliminate_button
 
 
-def mode_edition():
-    st.session_state.mode = False
-    st.session_state.mode_stake_holder = False
 
 def get_profile_team(functions, year, selected_employee):
     set_config_page()
@@ -58,53 +55,9 @@ def manage_profile_users(profile_user, selected_employee, year):
         selected_functions['Employee Name'] = selected_employee
         selected_functions['Level'] = 'Basic'
 
-#         define_stake_holder(id_selected_employee)
-#
-#
-#
-# def define_stake_holder(id_selected_employee):
-#     if not st.session_state.mode_stake_holder:
-#         id_stake_holder = st.session_state.users_DB[st.session_state.users_DB['id'] ==
-#                                                     id_selected_employee]['stakeholder'].iloc[0]
-#         sta, sta2,  = st.columns([2, 6])
-#         if id_stake_holder != '':
-#
-#             stake_holder = st.session_state.users_DB[st.session_state.users_DB['id'] ==
-#                                                      id_stake_holder]['name'].iloc[0]
-#             sta.selectbox('Stakeholder',options=[f'{stake_holder}'], index=0, disabled=True)
-#         else:
-#             sta.selectbox('Stakeholder',options=['To assign an Stakeholder'], index=0, disabled=True)
-#
-#         if st.button('Update Stakeholder'):
-#             st.session_state.mode_stake_holder = True
-#             st.rerun()
-#     else:
-#         sta, sta2 = st.columns([2, 6])
-#         sta.markdown('#### Stakeholder')
-#         stake_holder = sta.selectbox('Stakeholder',
-#                                      options=st.session_state.users_DB['name'],
-#                                      index=0,
-#                                      label_visibility="collapsed")
-#
-#         stake_holder = st.session_state.users_DB[st.session_state.users_DB['name'] == stake_holder]['id'].iloc[0]
-#         space()
-#         with sta:
-#             opt, opt2 = st.columns([2, 2])
-#             with opt2:
-#                 if new_button('Confirm'):
-#                     save_stakeholder(stake_holder, id_selected_employee)
-#                     st.session_state.mode_stake_holder = False
-#                     st.rerun()
-#             with opt:
-#                 if eliminate_button('Cancel'):
-#                     st.session_state.mode_stake_holder = False
-#                     st.rerun()
-#         space(lines=2)
-
-
 
 def get_profile_user(function, selected_employee, year):
-    st.subheader(f'Profile of "{selected_employee}"')
+    st.subheader(f'Functions of "{selected_employee}"')
     function = function[(function['Department'] == st.session_state.area)]
     profile_user = read_pickle_profile_user(function, selected_employee, year)
     if year in profile_user['Year'].values:

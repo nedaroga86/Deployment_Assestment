@@ -1,24 +1,18 @@
-import os
-import sqlite3
-
 import streamlit as st
 from conf_page import set_config_page
 from manager_pickles import read_pickle_profile_user
 from profile_table import display_aggrid_table
-from filters import show_filter_menu
 
 
 
-def mode_edition():
-    st.session_state.mode = False
+
 
 def run_assessment(functions, year, selected_employee):
     if 'mode' not in st.session_state:
         st.session_state.mode = False
     set_config_page()
 
-
-    st.subheader(f'Profile of {selected_employee} - {year}')
+    st.subheader(f'Functions of {selected_employee} - {year}')
     profile_user = get_profile_user(functions, selected_employee, year)
     manage_profile_users(profile_user, selected_employee)
 

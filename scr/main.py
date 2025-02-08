@@ -6,12 +6,14 @@ from load_files import load_files
 from assessment_process import get_score
 from admin_site import Setup
 from reports import Reports
-from buttons_design import eliminate_button
-from hardskills import Hardskills_class
+from hard_skills_users import Hardskills_class
 from filters import show_filter_menu
 from profile_team import get_profile_team
+from hard_skills_team import get_hard_skills_team
+from soft_skills_users import Softskills_class
+from soft_skils_team import get_soft_skills_team
 from stakeholder_team import get_stakeholder_team
-from softskills import Softskills_class
+
 
 
 class Main_Program:
@@ -22,41 +24,34 @@ class Main_Program:
         if 'profile_selected' not in st.session_state:
             st.session_state.profile_selected = 'My Profile'
 
-        menu_options = ["Categories","Assessments", 'Reports','Setup']
+
         col0, col1 = st.sidebar.columns([3,2])
         col0.subheader(st.session_state.profile_selected, divider=True)
         profile = col1.button('Change', use_container_width=True)
-        st.sidebar.divider()
 
         if profile:
             self.get_profile()
-        with st.sidebar:
-            logout =eliminate_button('Logout')
-            if logout:
-                if st.session_state.logged_in:
-                    st.session_state.logged_in = False
-                st.rerun()
-
-        with st.sidebar.container(border=True):
-
-            page = st.selectbox("Sections:", options=menu_options)
-            year = show_filter_menu()
-
 
         files = load_files()
         function = files.get_functions()
+        softskills = files.get_softskills()
+        hardskills = files.get_hardskills()
 
+        with st.sidebar.container(border=True):
+            menu_options = ["Categories","Assessments", 'Reports','Setup']
+            page = st.selectbox("Sections:", options=menu_options)
+            year = show_filter_menu()
 
-        if st.session_state.profile_selected == 'My Profile':
-            selected_employee = st.session_state.name
-        else:
-            employees = st.session_state.team
-            selected_employee = st.sidebar.selectbox('Employee', options=employees)
+            if st.session_state.profile_selected == 'My Profile':
+                selected_employee = st.session_state.name
+            else:
+                employees = st.session_state.team
+                selected_employee = st.selectbox('Employee', options=employees)
 
         if page == 'Categories' or page == 'Assessments':
             if page == 'Categories':
-                option =['Functions','Softskills','Hardskills','Stakeholder']
-                icon= ['house', 'cloud-upload', "list-task", 'gear']
+                option =['Functions','Softskills','Hardskills','Stakeholder', 'Logout']
+                icon= ['house', 'cloud-upload', "list-task", 'gear', 'box-arrow-right']
             else:
                 option =['Functions','Softskills','Hardskills']
                 icon =['house', 'cloud-upload', "list-task"]
@@ -72,17 +67,26 @@ class Main_Program:
                 else:
                     get_profile_team(function, year, selected_employee)
             elif tab=='Softskills':
-                soft = Softskills_class()
-                soft.get_softskills()
+                if st.session_state.profile_selected == 'My Profile':
+                    soft = Softskills_class()
+                    soft.get_softskills(softskills,year, selected_employee)
+                else:
+                    get_soft_skills_team(softskills,year, selected_employee)
             elif tab=='Hardskills':
-                hard = Hardskills_class()
-                hard.get_hardskills()
+                if st.session_state.profile_selected == 'My Profile':
+                    hard = Hardskills_class()
+                    hard.get_hardskills(hardskills,year, selected_employee)
+                else:
+                    get_hard_skills_team(hardskills,year, selected_employee)
             elif tab=='Stakeholder':
                 if st.session_state.profile_selected == 'My Profile':
                     get_stakeholder_team('Own',  selected_employee)
                 else:
                     get_stakeholder_team('Team',selected_employee)
-
+            elif tab == "Logout":
+                if st.session_state.logged_in:
+                    st.session_state.logged_in = False
+                st.rerun()
         elif page == 'Assessments':
             get_score(function, selected_employee, year)
         elif page == "Reports":
@@ -91,6 +95,7 @@ class Main_Program:
         elif page == "Setup":
             admin = Setup()
             admin.setup()
+
 
 
     @st.dialog('Select View Mode:')
