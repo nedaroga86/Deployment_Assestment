@@ -19,6 +19,7 @@ from stakeholder_team import get_stakeholder_team
 class Main_Program:
     def __init__(self):
         self.jobs = 0
+        self.files =load_files()
 
     def get_start(self):
         if 'profile_selected' not in st.session_state:
@@ -32,10 +33,12 @@ class Main_Program:
         if profile:
             self.get_profile()
 
-        files = load_files()
-        function = files.get_functions()
-        softskills = files.get_softskills()
-        hardskills = files.get_hardskills()
+        if 'function' not in st.session_state:
+            st.session_state.function = self.files.get_functions()
+        if 'softSkills' not in st.session_state:
+            st.session_state.softSkills = self.files.get_softskills()
+        if 'hardSkills' not in st.session_state:
+            st.session_state.hardSkills = self.files.get_hardskills()
 
         with st.sidebar.container(border=True):
             menu_options = ["Categories","Assessments", 'Reports','Setup']
@@ -63,21 +66,21 @@ class Main_Program:
         if page == 'Categories':
             if tab =='Functions':
                 if st.session_state.profile_selected == 'My Profile':
-                    run_assessment(function,year, selected_employee)
+                    run_assessment(st.session_state.function,year, selected_employee)
                 else:
-                    get_profile_team(function, year, selected_employee)
+                    get_profile_team(st.session_state.function, year, selected_employee)
             elif tab=='Softskills':
                 if st.session_state.profile_selected == 'My Profile':
                     soft = Softskills_class()
-                    soft.get_softskills(softskills,year, selected_employee)
+                    soft.get_softskills(st.session_state.softSkills,year, selected_employee)
                 else:
-                    get_soft_skills_team(softskills,year, selected_employee)
+                    get_soft_skills_team(st.session_state.softSkills,year, selected_employee)
             elif tab=='Hardskills':
                 if st.session_state.profile_selected == 'My Profile':
                     hard = Hardskills_class()
-                    hard.get_hardskills(hardskills,year, selected_employee)
+                    hard.get_hardskills(st.session_state.hardSkills,year, selected_employee)
                 else:
-                    get_hard_skills_team(hardskills,year, selected_employee)
+                    get_hard_skills_team(st.session_state.hardSkills,year, selected_employee)
             elif tab=='Stakeholder':
                 if st.session_state.profile_selected == 'My Profile':
                     get_stakeholder_team('Own',  selected_employee)
@@ -88,7 +91,7 @@ class Main_Program:
                     st.session_state.logged_in = False
                 st.rerun()
         elif page == 'Assessments':
-            get_score(function, selected_employee, year)
+            get_score(st.session_state.function, selected_employee, year)
         elif page == "Reports":
             reports = Reports()
             reports.get_reports()
